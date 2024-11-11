@@ -15,17 +15,19 @@ jobs:
       - name: Check out GitHub repository
         uses: actions/checkout@v3
 
-      # Step 1: Set up a script to pass the GitLab token as a password
-      - name: Configure GitLab Token for Authentication
+      # Step 1: Create askpass.bat script to pass the GitLab token as the password
+      - name: Create askpass.bat for GitLab authentication
+        shell: pwsh
         run: |
-          echo "@echo off" > askpass.bat
-          echo "echo ${env:GITLAB_TOKEN}" >> askpass.bat
-          ${env:GIT_ASKPASS} = "${pwd}\askpass.bat"
+          Set-Content -Path "$env:GITHUB_WORKSPACE\askpass.bat" -Value "@echo off`necho %GITLAB_TOKEN%"
         env:
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
 
-      # Step 2: Set GIT_ASKPASS to use the askpass.bat script and clone the repository
+      # Step 2: Set GIT_ASKPASS to use askpass.bat and clone the GitLab repository
       - name: Clone GitLab Repository
+        env:
+          GIT_ASKPASS: ${{ github.workspace }}\askpass.bat
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
         run: git clone https://lycis@gitlab.com/lycis/the-dark-aid.git
 
       - name: Install Qt 6.8 on Windows
