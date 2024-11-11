@@ -2,10 +2,10 @@ name: Daily Windows Build from GitLab
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # Schedule this action to run once a day
-  push: 
-    branches: 
-        - main
+    - cron: '0 0 * * *'  # Runs daily at midnight UTC
+  push:
+    branches:
+      - main
 
 jobs:
   build:
@@ -15,30 +15,40 @@ jobs:
       - name: Check out GitHub repository
         uses: actions/checkout@v3
 
-      - name: Clone GitLab Repository
-        run: git clone https://lycis@gitlab.com/lycis/the-dark-aid.git
+      # Step 1: Set up a script to pass the GitLab token as a password
+      - name: Configure GitLab Token for Authentication
+        run: |
+          echo @echo off > askpass.bat
+          echo echo %GITLAB_TOKEN% >> askpass.bat
         env:
-          GIT_ASKPASS: ${{ secrets.GITLAB_TOKEN }} # Sets up GitLab access token for authentication
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+
+      # Step 2: Set GIT_ASKPASS to use the askpass.bat script and clone the repository
+      - name: Clone GitLab Repository
+        env:
+          GIT_ASKPASS: "$(pwd)/askpass.bat"
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+        run: git clone https://lycis@gitlab.com/lycis/the-dark-aid.git
 
       - name: Install Qt 6.8 on Windows
         uses: jurplel/install-qt-action@v4
         with:
-            version: '6.8.0'
-            host: 'windows'
-            target: 'desktop'
-            arch: 'win64_msvc2022_64'
-            dir: 'C:/Qt'
+          version: '6.8.0'
+          host: 'windows'
+          target: 'desktop'
+          arch: 'win64_msvc2022_64'
+          dir: 'C:/Qt'
   
       - name: Setup MSVC environment
         uses: TheMrMilchmann/setup-msvc-dev@v3
         with:
-            arch: x64
+          arch: x64
 
       - name: Download jom.exe
         shell: pwsh
         run: | 
-            cd the-dark-aid
-            Invoke-WebRequest -Uri 'http://download.qt.io/official_releases/jom/jom.zip' -OutFile '.\jom.zip'
+          cd the-dark-aid
+          Invoke-WebRequest -Uri 'http://download.qt.io/official_releases/jom/jom.zip' -OutFile '.\jom.zip'
 
       - name: Unpack jom.exe
         run: Expand-Archive -LiteralPath '.\jom.zip' -DestinationPath '.\jom\'
@@ -46,9 +56,9 @@ jobs:
       - name: Build with qmake-nmake
         shell: cmd
         run: |
-            set QTDIR=C:/Qt/6.8.0/msvc2022_64
-            set PATH=%PATH%;$Env:QTDIR/bin
-            mkdir build
-            cd build
-            qmake ../
-            ..\jom\jom.exe -j8
+          set QTDIR=C:/Qt/6.8.0/msvc2022_64
+          set PATH=%PATH%;%QTDIR%/bin
+          mkdir build
+          cd build
+          qmake ../
+          ..\jom\jom.exe -j8
