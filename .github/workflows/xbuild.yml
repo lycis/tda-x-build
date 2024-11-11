@@ -20,14 +20,12 @@ jobs:
         run: |
           echo "@echo off" > askpass.bat
           echo "echo ${env:GITLAB_TOKEN}" >> askpass.bat
+          ${env:GIT_ASKPASS} = ${pwd}\askpass.bat
         env:
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
 
       # Step 2: Set GIT_ASKPASS to use the askpass.bat script and clone the repository
       - name: Clone GitLab Repository
-        env:
-          GIT_ASKPASS: $pwd\askpass.bat
-          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
         run: git clone https://lycis@gitlab.com/lycis/the-dark-aid.git
 
       - name: Install Qt 6.8 on Windows
