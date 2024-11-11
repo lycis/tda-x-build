@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Clone GitLab Repository
-        run: git clone https://gitlab.com/lycis/the-dark-aid.git
+        run: git clone https://lycis@gitlab.com/lycis/the-dark-aid.git
         env:
           GIT_ASKPASS: ${{ secrets.GITLAB_TOKEN }} # Sets up GitLab access token for authentication
 
@@ -36,7 +36,9 @@ jobs:
 
       - name: Download jom.exe
         shell: pwsh
-        run: Invoke-WebRequest -Uri 'http://download.qt.io/official_releases/jom/jom.zip' -OutFile '.\jom.zip'
+        run: | 
+            cd the-dark-aid
+            Invoke-WebRequest -Uri 'http://download.qt.io/official_releases/jom/jom.zip' -OutFile '.\jom.zip'
 
       - name: Unpack jom.exe
         run: Expand-Archive -LiteralPath '.\jom.zip' -DestinationPath '.\jom\'
