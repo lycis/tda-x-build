@@ -63,9 +63,10 @@ jobs:
           ..\jom\jom.exe -j8
 
       - name: Run tests
+        shell: cmd
         run: |
           cd the-dark-aid
-          ${env:QTDIR}="C:/Qt/6.8.0/msvc2022_64"
-          ${env:PATH}="${env:PATH};${env:QTDIR}/bin"
+          set QTDIR=C:/Qt/6.8.0/msvc2022_64
+          set PATH=%PATH%;%QTDIR%/bin
           cd build\bin\release\thedarkaid\lib\
           .\tests.exe
