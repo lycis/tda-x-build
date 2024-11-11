@@ -26,7 +26,7 @@ jobs:
       # Step 2: Set GIT_ASKPASS to use the askpass.bat script and clone the repository
       - name: Clone GitLab Repository
         env:
-          GIT_ASKPASS: "$(pwd)/askpass.bat"
+          GIT_ASKPASS: "askpass.bat"
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
         run: git clone https://lycis@gitlab.com/lycis/the-dark-aid.git
 
