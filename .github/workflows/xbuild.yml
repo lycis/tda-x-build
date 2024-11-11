@@ -1,0 +1,52 @@
+name: Daily Build from GitLab
+
+# Schedule this action to run once a day
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Adjust the time as needed, this runs daily at midnight UTC
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      # Step 1: Check out this GitHub repository (required to use GitHub secrets)
+      - name: Check out GitHub repository
+        uses: actions/checkout@v3
+
+      # Step 2: Clone the private GitLab repository
+      - name: Clone GitLab Repository
+        run: git clone https://gitlab.com/lycis/the-dark-aid.git
+        env:
+          GIT_ASKPASS: echo ${GITLAB_TOKEN}  # Sets up GitLab access token for authentication
+
+      - name: Install Qt 6.8 on Windows
+        uses: jurplel/install-qt-action@v4
+        with:
+            version: '6.8.0'
+            host: 'windows'
+            target: 'desktop'
+            arch: 'win64_msvc2022_64'
+            dir: 'C:/Qt'
+  
+      - name: Setup MSVC environment
+        uses: TheMrMilchmann/setup-msvc-dev@v3
+        with:
+            arch: x64
+
+      - name: Download jom.exe
+        shell: pwsh
+        run: Invoke-WebRequest -Uri 'http://download.qt.io/official_releases/jom/jom.zip' -OutFile '.\jom.zip'
+
+      - name: Unpack jom.exe
+        run: Expand-Archive -LiteralPath '.\jom.zip' -DestinationPath '.\jom\'
+
+      - name: Build with qmake-nmake
+        shell: cmd
+        run: |
+            set QTDIR=C:/Qt/6.8.0/msvc2022_64
+            set PATH=%PATH%;$Env:QTDIR/bin
+            mkdir build
+            cd build
+            qmake ../
+            ..\jom\jom.exe -j8
