@@ -20,7 +20,7 @@ jobs:
         run: |
           echo "@echo off" > askpass.bat
           echo "echo ${env:GITLAB_TOKEN}" >> askpass.bat
-          ${env:GIT_ASKPASS} = ${pwd}\askpass.bat
+          ${env:GIT_ASKPASS} = "${pwd}\askpass.bat"
         env:
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
 
