@@ -18,15 +18,15 @@ jobs:
       # Step 1: Set up a script to pass the GitLab token as a password
       - name: Configure GitLab Token for Authentication
         run: |
-          echo @echo off > askpass.bat
-          echo echo %GITLAB_TOKEN% >> askpass.bat
+          echo "@echo off" > askpass.bat
+          echo "echo ${env:GITLAB_TOKEN}" >> askpass.bat
         env:
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
 
       # Step 2: Set GIT_ASKPASS to use the askpass.bat script and clone the repository
       - name: Clone GitLab Repository
         env:
-          GIT_ASKPASS: "askpass.bat"
+          GIT_ASKPASS: $pwd\askpass.bat
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
         run: git clone https://lycis@gitlab.com/lycis/the-dark-aid.git
 
