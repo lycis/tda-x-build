@@ -17,11 +17,10 @@ jobs:
       - name: Check out GitHub repository
         uses: actions/checkout@v3
 
-      # Step 2: Clone the private GitLab repository
       - name: Clone GitLab Repository
-        run: git clone https://gitlab.com/lycis/the-dark-aid.git
+        run: git clone https://$GITLAB_TOKEN@gitlab.com/lycis/the-dark-aid.git
         env:
-          GIT_ASKPASS: echo ${GITLAB_TOKEN}  # Sets up GitLab access token for authentication
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
 
       - name: Install Qt 6.8 on Windows
         uses: jurplel/install-qt-action@v4
