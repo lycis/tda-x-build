@@ -4,6 +4,9 @@ name: Daily Build from GitLab
 on:
   schedule:
     - cron: '0 0 * * *'  # Adjust the time as needed, this runs daily at midnight UTC
+  push: 
+    branches: 
+        - main
 
 jobs:
   build:
