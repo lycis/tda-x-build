@@ -1,9 +1,8 @@
-name: Daily Build from GitLab
+name: Daily Windows Build from GitLab
 
-# Schedule this action to run once a day
 on:
   schedule:
-    - cron: '0 0 * * *'  # Adjust the time as needed, this runs daily at midnight UTC
+    - cron: '0 0 * * *'  # Schedule this action to run once a day
   push: 
     branches: 
         - main
@@ -13,14 +12,13 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      # Step 1: Check out this GitHub repository (required to use GitHub secrets)
       - name: Check out GitHub repository
         uses: actions/checkout@v3
 
       - name: Clone GitLab Repository
-        run: git clone https://$GITLAB_TOKEN@gitlab.com/lycis/the-dark-aid.git
+        run: git clone https://gitlab.com/lycis/the-dark-aid.git
         env:
-          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+          GIT_ASKPASS: ${{ secrets.GITLAB_TOKEN }} # Sets up GitLab access token for authentication
 
       - name: Install Qt 6.8 on Windows
         uses: jurplel/install-qt-action@v4
