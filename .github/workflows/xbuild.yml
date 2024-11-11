@@ -49,16 +49,23 @@ jobs:
         run: | 
           cd the-dark-aid
           Invoke-WebRequest -Uri 'http://download.qt.io/official_releases/jom/jom.zip' -OutFile '.\jom.zip'
-
-      - name: Unpack jom.exe
-        run: Expand-Archive -LiteralPath '.\jom.zip' -DestinationPath '.\jom\'
+          Expand-Archive -LiteralPath '.\jom.zip' -DestinationPath '.\jom\'
 
       - name: Build with qmake-nmake
         shell: cmd
         run: |
+          cd the-dark-aid
           set QTDIR=C:/Qt/6.8.0/msvc2022_64
           set PATH=%PATH%;%QTDIR%/bin
           mkdir build
           cd build
           qmake ../
           ..\jom\jom.exe -j8
+
+      - name: Run tests
+        run: |
+          cd the-dark-aid
+          set QTDIR=C:/Qt/6.8.0/msvc2022_64
+          set PATH=%PATH%;%QTDIR%/bin
+          cd build\bin\release\thedarkaid\lib\
+          .\tests.exe
