@@ -72,3 +72,27 @@ jobs:
           cd build\bin\release\thedarkaid\lib\
           xcopy ..\..\..\..\..\libs\stackwalker.dll .
           .\tests.exe
+
+      - name: Upload to GitLab nightly release
+        env:
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+        run: |
+          # PowerShell script to get the current date in YYYYMMDD format
+          $date = Get-Date -Format "yyyyMMdd"
+  
+          # Define release name and tag
+          $releaseName = "Nightly Release $date"
+          $tagName = "nightly-$date"
+  
+          # Upload the release to GitLab
+          Invoke-WebRequest -Uri "https://gitlab.com/api/v4/projects/lycis/the-dark-aid/releases" `
+            -Method Post `
+            -Headers @{ "PRIVATE-TOKEN" = "$env:GITLAB_TOKEN" } `
+            -Form @{
+              "name" = $releaseName;
+              "tag_name" = $tagName;
+              "description" = "Automated nightly release by GitHub Actions";
+              "assets[links][][name]" = "thedarkaidbuild.zip";
+              "assets[links][][url]" = "https://$env:GITHUB_SERVER_URL/$env:GITHUB_REPOSITORY/actions/runs/$env:GITHUB_RUN_ID";
+              "file" = Get-Item -Path ".\build\bin\release\thedarkaid_16_windows_qt6.8.zip"
+            }
