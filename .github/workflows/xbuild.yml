@@ -86,7 +86,7 @@ jobs:
           $tagName = "nightly-$date"
   
           # Upload the release to GitLab
-          Invoke-WebRequest -Uri "https://gitlab.com/api/v4/projects/lycis/the-dark-aid/releases" `
+          Invoke-WebRequest -Uri "https://gitlab.com/api/v4/projects/63089662/releases" `
             -Method Post `
             -Headers @{ "PRIVATE-TOKEN" = "$env:GITLAB_TOKEN" } `
             -Form @{
