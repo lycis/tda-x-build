@@ -84,6 +84,7 @@ jobs:
           # Define release name and tag
           $releaseName = "Nightly Release $date"
           $tagName = "nightly-$date"
+          $commitHash = (git rev-parse HEAD).Substring(0,16)
   
           # Upload the release to GitLab
           Invoke-WebRequest -Uri "https://gitlab.com/api/v4/projects/63089662/releases" `
@@ -92,6 +93,7 @@ jobs:
             -Form @{
               "name" = $releaseName;
               "tag_name" = $tagName;
+              "ref" = $commitHash;
               "description" = "Automated nightly release by GitHub Actions";
               "assets[links][][name]" = "thedarkaidbuild.zip";
               "assets[links][][url]" = "https://$env:GITHUB_SERVER_URL/$env:GITHUB_REPOSITORY/actions/runs/$env:GITHUB_RUN_ID";
