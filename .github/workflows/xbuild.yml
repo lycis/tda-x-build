@@ -77,7 +77,7 @@ jobs:
         env:
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
         run: |
-          dir .\the-dark-aid\build\bin\release\
+          cd .\the-dark-aid\build\bin\release\
           # PowerShell script to get the current date in YYYYMMDD format
           $date = Get-Date -Format "yyyyMMdd"
   
@@ -97,5 +97,5 @@ jobs:
               "description" = "Automated nightly release by GitHub Actions";
               "assets[links][][name]" = "thedarkaidbuild.zip";
               "assets[links][][url]" = "https://$env:GITHUB_SERVER_URL/$env:GITHUB_REPOSITORY/actions/runs/$env:GITHUB_RUN_ID";
-              "file" = Get-Item -Path ".\the-dark-aid\build\bin\release\thedarkaid_16_windows_qt6.8.zip"
+              "file" = Get-Item -Path "thedarkaid_16_windows_qt6.8.zip"
             }
