@@ -88,8 +88,8 @@ jobs:
           $date = Get-Date -Format "yyyyMMdd"
   
           # Define release name and tag
-          $releaseName = "Nightly Release $date"
-          $tagName = "nightly-$date"
+          $releaseName = "Nightly Release"
+          $tagName = "nightly"
           $commitHash = (git rev-parse HEAD).Substring(0,16)
   
           # Upload the release to GitLab
