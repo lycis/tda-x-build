@@ -73,6 +73,12 @@ jobs:
           xcopy ..\..\..\..\..\libs\stackwalker.dll .
           .\tests.exe
 
+      - name: Store build result
+        uses: actions/upload-artifact@v4
+        with:
+          name: thedarkaid-nightly.zip
+          path: ./the-dark-aid/build/bin/release/thedarkaid.zip
+
       - name: Upload to GitLab nightly release
         env:
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
@@ -95,7 +101,7 @@ jobs:
               "tag_name" = $tagName;
               "ref" = $commitHash;
               "description" = "Automated nightly release by GitHub Actions";
-              "assets[links][][name]" = "thedarkaidbuild.zip";
+              "assets[links][][name]" = "thedarkaid.zip";
               "assets[links][][url]" = "https://$env:GITHUB_SERVER_URL/$env:GITHUB_REPOSITORY/actions/runs/$env:GITHUB_RUN_ID";
               "file" = Get-Item -Path "thedarkaid_16_windows_qt6.8.zip"
             }
