@@ -79,29 +79,32 @@ jobs:
           name: thedarkaid-nightly.zip
           path: ./the-dark-aid/build/bin/release/thedarkaid_16_windows_qt6.8.zip
 
-      - name: Upload to GitLab nightly release
-        env:
-          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
-        run: |
-          cd .\the-dark-aid\build\bin\release\
-          # PowerShell script to get the current date in YYYYMMDD format
-          $date = Get-Date -Format "yyyyMMdd"
+      # - name: Upload to GitLab nightly release
+      #     shell: pwsh
+      #     env:
+      #       GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+      #     run: |
+      #       # Artifact download URL
+      #       $artifactUrl = "https://github.com/$env:GITHUB_REPOSITORY/suites/$env:GITHUB_RUN_ID/artifacts/$env:GITHUB_ARTIFACT_ID"
   
-          # Define release name and tag
-          $releaseName = "Nightly Release"
-          $tagName = "nightly"
-          $commitHash = (git rev-parse HEAD).Substring(0,16)
+      #       # Define release name and tag
+      #       $releaseName = "Nightly Release"
+      #       $tagName = "nightly"
+      #       $description = "Automated nightly release by GitHub Actions"
   
-          # Upload the release to GitLab
-          Invoke-WebRequest -Uri "https://gitlab.com/api/v4/projects/63089662/releases" `
-            -Method Post `
-            -Headers @{ "PRIVATE-TOKEN" = "$env:GITLAB_TOKEN" } `
-            -Form @{
-              "name" = $releaseName;
-              "tag_name" = $tagName;
-              "ref" = $commitHash;
-              "description" = "Automated nightly release by GitHub Actions";
-              "assets[links][][name]" = "thedarkaid.zip";
-              "assets[links][][url]" = "https://$env:GITHUB_SERVER_URL/$env:GITHUB_REPOSITORY/actions/runs/$env:GITHUB_RUN_ID";
-              "file" = Get-Item -Path "thedarkaid_16_windows_qt6.8.zip"
-            }
+      #       # Post release to GitLab
+      #       Invoke-RestMethod -Uri "https://gitlab.com/api/v4/projects/63089662/releases" `
+      #         -Method Post `
+      #         -Headers @{ "PRIVATE-TOKEN" = "$env:GITLAB_TOKEN" } `
+      #         -Body @{
+      #           name = $releaseName
+      #           tag_name = $tagName
+      #           description = $description
+      #           assets = @{
+      #             links = @(@{
+      #               name = "thedarkaid.zip"
+      #               url = $artifactUrl
+      #             })
+      #           }
+      #         } | ConvertTo-Json -Depth 10
+  
