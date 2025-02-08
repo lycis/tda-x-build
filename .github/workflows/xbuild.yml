@@ -1,3 +1,4 @@
+#
 name: Daily Windows Build from GitLab
 
 on:
